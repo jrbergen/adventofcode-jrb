@@ -14,7 +14,7 @@ if __name__ == '__main__':
     forest = read_input(Path(Path(__file__).parent / 'input_day3.txt').resolve())
 
     starting_forest = forest
-    forest_end = forest.shape[0]
+    forest_end, forest_width = forest.shape
 
     tree = '#'
 
@@ -31,10 +31,7 @@ if __name__ == '__main__':
 
         while row < forest_end:
 
-            if col > forest.shape[1] - 1:
-                forest = np.concatenate([forest, starting_forest], axis=1)
-
-            if forest[row, col] == tree:
+            if forest[row, col % forest_width] == tree:
                 ntrees += 1
 
             row += drow
