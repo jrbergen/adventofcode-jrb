@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     tree = '#'
 
-    slopes = list(zip([1, 1, 1, 1, 2], [1, 3, 5, 7, 1]))
+    slopes = zip([1, 1, 1, 1, 2], [1, 3, 5, 7, 1])
 
     treecounts = []
     for drow, dcol in slopes:
