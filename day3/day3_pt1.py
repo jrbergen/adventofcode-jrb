@@ -12,18 +12,14 @@ def read_input(pth: Path) -> ndarray:
 
 if __name__ == '__main__':
     forest = read_input(Path(Path(__file__).parent / 'input_day3.txt').resolve())
-
     starting_forest = forest
     forest_end = forest.shape[0]
 
     row, col = 0, 0
     drow, dcol = 1, 3
 
-    tree = '#'
-    emptymark = 'O'
-    foundmark = 'X'
-    treepositions = []
-    emptypositions = []
+    tree, emptymark, foundmark = list('#OX')
+    treepositions, emptypositions = [], []
 
     while row < forest_end:
         if col > forest.shape[1] - 1:
@@ -38,6 +34,7 @@ if __name__ == '__main__':
 
     ntrees = len(treepositions)
 
+    # Not necessary but may ben ice for visualisation
     marked_forest = forest.copy()
     marked_forest[tuple(zip(*treepositions))] = foundmark
     marked_forest[tuple(zip(*emptypositions))] = emptymark

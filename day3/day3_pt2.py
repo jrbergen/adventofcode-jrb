@@ -4,6 +4,7 @@ import numpy as np
 from numpy import ndarray
 from functools import reduce
 
+
 def read_input(pth: Path) -> ndarray:
     with open(pth, 'r') as inputhandle:
         return np.array([list(line.strip()) for line in inputhandle])
@@ -16,8 +17,6 @@ if __name__ == '__main__':
     forest_end = forest.shape[0]
 
     tree = '#'
-    emptymark = 'O'
-    foundmark = 'X'
 
     slopes = list(zip([1, 1, 1, 1, 2], [1, 3, 5, 7, 1]))
 
@@ -26,9 +25,10 @@ if __name__ == '__main__':
         assert drow >= 0
         assert dcol >= 0
         assert not (drow == 0 and dcol == 0)
-        row, col = 0, 0
 
+        row, col = 0, 0
         treepositions, emptypositions = [], []
+
         while row < forest_end:
             if col > forest.shape[1] - 1:
                 forest = np.concatenate([forest, starting_forest], axis=1)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
             col += dcol
 
         ntrees = len(treepositions)
-        print(f"I've encountered {ntrees} trees in our wander through the forest with slope Right {dcol} Down {drow}.")
+        print(f"We've encountered {ntrees} trees in our wander through the forest with slope Right {dcol} Down {drow}.")
         treecounts.append(ntrees)
 
     print(f"The multiple of encountered trees = {reduce(lambda x, y: x*y, treecounts)}")
