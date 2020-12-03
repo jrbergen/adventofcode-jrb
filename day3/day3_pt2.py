@@ -27,7 +27,6 @@ if __name__ == '__main__':
         assert not (drow == 0 and dcol == 0)
 
         row, col = 0, 0
-        treepositions, emptypositions = [], []
         ntrees = 0
 
         while row < forest_end:
