@@ -53,9 +53,7 @@ def validate_date(date: Union[int, str], min_val: int, max_val: int):
 def validate_passport_id(pid: str, n_digits: int = 9):
     return pid.isdigit() and len(pid) == n_digits
 
-
-if __name__ == '__main__':
-
+def main():
     passports = read_passports(Path(Path(__file__).parent / 'input_day4.txt').resolve())
 
     valid_pps = []
@@ -75,3 +73,7 @@ if __name__ == '__main__':
             valid_pps.append(pp)
 
     print(f"Found {len(valid_pps)} valid passports")
+
+
+if __name__ == '__main__':
+    main()
