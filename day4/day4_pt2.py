@@ -41,7 +41,7 @@ def validate_eyecolor(eye_color: str,
     return eye_color in accepted_eyecolors
 
 
-def validate_date(date: Union[int, str], min_val: int, max_val: int):
+def validate_date(date: Union[int, str], min_val: int, max_val: int) -> bool:
     try:
         date = int(date)
     except ValueError:
@@ -50,7 +50,7 @@ def validate_date(date: Union[int, str], min_val: int, max_val: int):
     return min_val <= date <= max_val
 
 
-def validate_passport_id(pid: str, n_digits: int = 9):
+def validate_passport_id(pid: str, n_digits: int = 9) -> bool:
     return pid.isdigit() and len(pid) == n_digits
 
 
