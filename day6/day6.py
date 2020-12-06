@@ -12,7 +12,6 @@ def answer_part2(inpath: Path) -> int:
         return sum(sum(1 for letter in set(''.join(group)) if ''.join(group).count(letter) == len(group))
                    for group in all_answers)
 
-
 if __name__ == '__main__':
 
     infile = Path(__file__).parent / 'input_day6.txt'
