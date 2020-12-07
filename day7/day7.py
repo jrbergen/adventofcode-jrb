@@ -44,11 +44,29 @@ class BagNode:
         return found | {con.source for con in self.con_in}
 
 
+    def traverse_paths_downstream(self, startnode: Optional['BagNode'] = None,
+                                  lastnode: Optional['BagNode'] = None) -> Set['BagNode']:
 
-    def traverse_nodes_downstream(self, startname: Optional[str] = None, curname: Optional[str] = None,
-                                found: Set['BagNode'] = None) -> Set['BagNode']:
-        if curname == startname:
-            return 0
+        startnode = startnode or self
+        lastnode = lastnode or startnode
+        for conn in curnode.con_out:
+
+            path = curnode.traverse_paths_downstream(lastnode)
+
+
+        paths_traversed = False
+        curnode = startnode
+        cumsum = 0
+        while not paths_traversed:
+            visited = []
+            nextcons = []
+            for conn in curnode.con_out:
+                cumsum += conn.weight
+                visited.append(conn)
+                nextcons.extend(conn.target.con_out if conn.target.con_out not in visited)
+
+
+
 
         curname = startname or curname
         found = found or set()
