@@ -1,16 +1,19 @@
 import re
+from functools import reduce
 from pathlib import Path
-from typing import List, Optional, Union, Dict, NoReturn, Set, Tuple
+from typing import List, Optional, Union, Dict, NoReturn, Set
 
 
 class NodeConnection:
     source: "BagNode"
     target: "BagNode"
+    name: str
     weight: int
 
     def __init__(self, source: "BagNode", target: "BagNode", weight: int = 0):
         self.source = source
         self.target = target
+        self.name = f'{self.source.name}->{self.target.name}'
         self.weight = weight
 
     def __repr__(self):
@@ -22,6 +25,8 @@ class BagNode:
     cons: List[NodeConnection]
     con_in: List[NodeConnection]
     con_out: List[NodeConnection]
+    visited: bool
+    has_unvisited_kiddos: bool
 
     def __init__(self, name: str):
         self.name = name
@@ -30,6 +35,8 @@ class BagNode:
         self.con_out = []
         self.con_in_names, self.con_out_names = [], []
         self.num_incoming, self.num_outgoing = 0, 0
+        self.visited = False
+        self.has_unvisited_kiddos = False
 
     def traverse_nodes_upstream(self, startname: Optional[str] = None,
                                 found: Set['BagNode'] = None) -> Set['BagNode']:
@@ -43,67 +50,20 @@ class BagNode:
             found |= conn.source.traverse_nodes_upstream(startname, found)
         return found | {con.source for con in self.con_in}
 
-
-    def traverse_paths_downstream(self, startnode: Optional['BagNode'] = None,
-                                  lastnode: Optional['BagNode'] = None) -> Set['BagNode']:
-
-        startnode = startnode or self
-        lastnode = lastnode or startnode
-        for conn in curnode.con_out:
-
-            path = curnode.traverse_paths_downstream(lastnode)
-
-
-        paths_traversed = False
-        curnode = startnode
-        cumsum = 0
-        while not paths_traversed:
-            visited = []
-            nextcons = []
-            for conn in curnode.con_out:
-                cumsum += conn.weight
-                visited.append(conn)
-                nextcons.extend(conn.target.con_out if conn.target.con_out not in visited)
-
-
-
-
-        curname = startname or curname
-        found = found or set()
-
-        if not self.con_out:
-            return {self} if self.name != startname else set()
-
-        for conn in self.con_in:
-            found |= conn.source.traverse_nodes_upstream(curname, found)
-    #     return found | {con.source for con in self.con_in}
-    #
-    # def traverse_edges_downstream(self, startname: Optional[str] = None,
-    #                               connections: Set[NodeConnection] = None) -> Set[NodeConnection]:
-    #     startname = startname or self.name
-    #     connections = connections or set()
-    #
-    #     if not self.con_out:
-    #         return connections
-    #     connections |= set(self.con_out)
-    #
-    #     for conn in self.con_out:
-    #         connections |= conn.target.traverse_edges_downstream(startname, connections)
-    #
-    #     return connections
-
     def __repr__(self):
-        return self.name
+        return f'{self.__class__.__name__}({self.name})'
+
 
 class DirectedAcyclicGraph:
     rule_key_rex = re.compile(r'^(\w+ \w+) bag')
     can_contain_rex = re.compile(r'(\d+) (\w+ \w+)')
 
-    def __init__(self):
+    def __init__(self, default_startnode: str):
+        self.startnode = default_startnode
         self.nodes: Dict[str, BagNode] = {}
-        self.cons: List[NodeConnection] = []
-        self.srcnodes: List[str] = []
-        self.tgtnodes: List[str] = []
+        self.connections = {}
+
+        self.paths = []
 
         self.num_nodes: int = 0
 
@@ -121,14 +81,13 @@ class DirectedAcyclicGraph:
         src.num_outgoing += 1
         src.con_out_names.append(target_node)
         src.con_out.append(connection)
+        src.has_unvisited_kiddos = True
 
         tgt.num_incoming += 1
         tgt.con_in_names.append(source_node)
         tgt.con_in.append(connection)
 
-        self.cons.append(connection)
-        self.srcnodes = [node.name for node in self.nodes.values() if node.con_out]
-        self.tgtnodes = [node.name for node in self.nodes.values() if node.con_in]
+        self.connections[connection.name] = connection
 
     def add_node(self, node: Union[str, BagNode]) -> NoReturn:
         nodename = node.name if hasattr(node, 'name') else node
@@ -137,25 +96,26 @@ class DirectedAcyclicGraph:
             self.nodes[nodename] = BagNode(node)
         self.num_nodes = len(self.nodes)
 
-
-    def traverse_connections(self, startnode: str, curnodes: Optional[str] = None, cumsum: int = 0):
-
-        curnodes = [startnode] or curnodes
-
-        while curnodes:
-            cumsum += sum(con.weight for con in self.cons if con.source.name == curnode)
-        for connection in self.cons:
-            if connection.source.name == curnode:
-
-                curnode =
-
-                #!BOEKENLEGGER
-
+    def dfs(self, path: Optional[List[BagNode]] = None, paths: Optional[list] = None):
+        path = path or [self.startnode if type(self.startnode) == BagNode else self[self.startnode]]
+        if type(path) == BagNode:
+            path = [path]
+        paths = paths or []
+        lastnode: BagNode = path[-1]
+        if lastnode in self and lastnode.con_out:
+            for subnode in [conn.target for conn in self[lastnode.name].con_out]:
+                new_path = path + [subnode]
+                paths = self.dfs(new_path, paths)
+        else:
+            paths += [path]
+        return paths
 
     @classmethod
-    def from_rules(cls, rules: List[str]) -> 'DirectedAcyclicGraph':
-        _graph = cls()
+    def from_rules(cls, rules: List[str], default_startnode: Optional[BagNode]) -> 'DirectedAcyclicGraph':
+        _graph = cls(default_startnode)
         for rule in rules:
+            if not rule:
+                continue
             curnode = cls.rule_key_rex.search(rule).groups()[0]
             _graph.add_node(curnode)
             for tgt_weight, tgt_name in cls.can_contain_rex.findall(rule):
@@ -164,7 +124,7 @@ class DirectedAcyclicGraph:
         return _graph
 
     def __iter__(self):
-        yield from self.nodes.items()
+        yield from self.nodes.values()
 
     def __getitem__(self, key: str):
         return self.nodes[key]
@@ -175,22 +135,36 @@ class DirectedAcyclicGraph:
         else:
             return f"{self.__class__.__name__}()"
 
+    def calc_nobags(self):
+        cumsum = 0
+        for path in self.paths:
+            weights = [graph.connections[f'{curnode.name}->{nextnode.name}'].weight for
+                       curnode, nextnode in zip(path[:-1], path[1:])]
+            while len(weights) > 1:
+                cumsum += reduce(lambda x, y: x * y, weights[1:]) + weights[0]
+                weights = weights[1:]
+        paths = self.paths
+        #   weights = weights[:-1]
+        [print(path) for path in self.paths]
+
+        return cumsum
+
 
 def read_rules(inpath: Path) -> List[str]:
     return inpath.read_text().split('\n')
 
 
 if __name__ == '__main__':
-    rulepath = Path(Path(__file__).parent / 'input_day7.txt')
+    rulepath = Path(Path(__file__).parent / 'testinput2_day7.txt')
     rules = read_rules(rulepath)
-    graph = DirectedAcyclicGraph.from_rules(rules)
 
     targetbag = 'shiny gold'
-    can_contain_targetbag_set = graph[targetbag].traverse_nodes_upstream()
-    downstream_connections = graph.traverse_edges_downstream(targetbag)
-    #downstream_connections = graph[targetbag].traverse_edges_downstream()
-    #nbags = sum(conn.weight for conn in downstream_connections)
-    ##nbags =
 
+    graph = DirectedAcyclicGraph.from_rules(rules, default_startnode=targetbag)
+
+    can_contain_targetbag_set = graph[targetbag].traverse_nodes_upstream()
     print(f"Solution 1: {len(can_contain_targetbag_set)} bags can hold target bag {targetbag}")
+
+    graph.paths = graph.dfs()
+    nbags = graph.calc_nobags()
     print(f"Solution 2: {targetbag} will have to contain {nbags} to pass airport security")
