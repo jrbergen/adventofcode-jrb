@@ -19,7 +19,7 @@ def part1(data: List[int], preamble_size: int) -> int:
         preamble = data[curidx - preamble_size:curidx]
         if not any(num_a + num_b == num for num_a, num_b in combinations_with_replacement(preamble, 2)):
             return num
-    print("Part 1 failed: No number found which cannot be constructed by any number pair in the preamble...")
+    print("Part 1 failed: No number found which cannot be constructed by summing any number pair in the preamble...")
     return -1
 
 
