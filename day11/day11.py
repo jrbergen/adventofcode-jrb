@@ -44,9 +44,34 @@ def part1_purepython(seatmat: List[List[int]], ignoreval: int = -2) -> Tuple[int
         iteration += 1
 
 
-def explore(row:int, col: int, seat: int, newseats: List[List[int]], directions: Tuple[Tuple[int,int],...],
-            num_directions: int, maxrow: int, maxcol: int, lastseats: List[List[int]], ignoreval: int, gtfo_thresh:int):
+def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
+                     gtfo_thresh: int = 5) -> Tuple[int, int]:
+    niter = 0
+    lastseats = seatmat
+    directions = tuple({x for x in itertools.product([0, 1, -1, 1], [0, 1, -1, 1])} - {(0, 0)})
+    num_directions = len(directions)
+    maxrow, maxcol = len(seatmat) - 1, len(seatmat[0]) - 1
 
+    while True:
+        niter += 1
+        print(f"Iteration: {niter}", end='\r')
+        newseats = [[0 for _ in y] for y in lastseats]
+
+        for row, col, seat in iterate_2dlist(lastseats):
+            newseats = explore(row, col, seat, newseats, directions,
+                               num_directions, maxrow, maxcol, lastseats,
+                               ignoreval, gtfo_thresh)
+
+        if newseats == lastseats:
+            return sum((x for y in newseats for x in y if x > 0)), niter
+
+        lastseats = newseats.copy()
+
+
+def explore(row: int, col: int, seat: int, newseats: List[List[int]],
+            directions: Tuple[Tuple[int, int], ...], num_directions: int,
+            maxrow: int, maxcol: int,
+            lastseats: List[List[int]], ignoreval: int, gtfo_thresh: int):
     if seat == -2:
         newseats[row][col] = -2
         return newseats
@@ -97,30 +122,6 @@ def explore(row:int, col: int, seat: int, newseats: List[List[int]], directions:
         newseats[row][col] = seat
 
     return newseats
-
-def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
-                     gtfo_thresh: int = 5) -> Tuple[int, int]:
-
-    niter = 0
-    lastseats = seatmat
-    directions = tuple({x for x in itertools.product([0, 1, -1, 1], [0, 1, -1, 1])} - {(0,0)})
-    num_directions = len(directions)
-    maxrow, maxcol = len(seatmat)-1, len(seatmat[0])-1
-
-    while True:
-        niter += 1
-        print(f"Iteration: {niter}", end='\r')
-        newseats = [[0 for _ in y] for y in lastseats]
-
-        for row, col, seat in iterate_2dlist(lastseats):
-            newseats = explore(row, col, seat, newseats, directions,
-                               num_directions, maxrow, maxcol, lastseats,
-                               ignoreval, gtfo_thresh)
-
-        if newseats == lastseats:
-            return sum((x for y in newseats for x in y if x > 0)), niter
-
-        lastseats = newseats.copy()
 
 
 def iterate_2dlist(nestedlist: List[List[Any]]):
@@ -174,4 +175,3 @@ if __name__ == '__main__':
     print(f"\n\nPart 1: Stable seat occupation state occured with {p1[0]} seats occupied after {p1[1]} iterations\n")
     p2 = part2_purepython(read_input(datapath))
     print(f"\n\nPart 2: Stable seat occupation state occured with {p2[0]} seats occupied after {p2[1]} iterations\n")
-
