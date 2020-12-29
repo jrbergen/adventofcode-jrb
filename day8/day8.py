@@ -1,5 +1,18 @@
 from pathlib import Path
 from typing import Union, List, NoReturn
+from functools import wraps
+from time import time
+
+def timing(f):
+    @wraps(f)
+    def wrap(*args, **kw):
+        ts = time()
+        result = f(*args, **kw)
+        te = time()
+        print('func:%r took: %2.4f sec' % \
+          (f.__name__, te-ts))
+        return result
+    return wrap
 
 
 def read_instructions(text_file: Union[str, Path]) -> List[List[Union[str, int]]]:
@@ -7,6 +20,7 @@ def read_instructions(text_file: Union[str, Path]) -> List[List[Union[str, int]]
     return [[line.split(' ')[0], int(line.split(' ')[1])] for line in text_file.read_text().split('\n') if line]
 
 
+@timing
 def part1(program: List[List[Union[str, int]]]) -> NoReturn:
     acc, readhead = 0, 0
     ran_instructions = set()
@@ -36,6 +50,7 @@ def part1(program: List[List[Union[str, int]]]) -> NoReturn:
 def bruteforce_instruction_replacement(repl_idx: List[int], replacement: str,
                                        program: List[List[str]], verbose: bool = False):
     bruteforce_attempts = 0
+    program = tuple(program)
     for repl_index in repl_idx:
 
         oldval = program[repl_index][0]
@@ -48,9 +63,10 @@ def bruteforce_instruction_replacement(repl_idx: List[int], replacement: str,
         while True:
 
             if readhead > len(program) - 1 or readhead < 0:
-                print(f"Found terminating state after {bruteforce_attempts} replacement attempts...")
-                print(f"Value of 'acc' upon termination was: {acc}")
-                print(f"Program terminates if '{oldval}' at line {repl_index} is replaced by '{replacement}'")
+                print('\n'.join([f"Found terminating state after {bruteforce_attempts} replacement attempts...",
+                                 f"Value of 'acc' upon termination was: {acc}",
+                                 f"Program terminates if '{oldval}' at line {repl_index} is ",
+                                 f"replaced by '{replacement}'"]))
                 return True
 
             if readhead in ran_instructions:
@@ -75,6 +91,7 @@ def bruteforce_instruction_replacement(repl_idx: List[int], replacement: str,
     return False
 
 
+@timing
 def part2(program: List[List[Union[str, int]]]) -> NoReturn:
     nopidx = [lineno for lineno, instr in enumerate(program) if instr[0] == 'nop']
     jmpidx = [lineno for lineno, instr in enumerate(program) if instr[0] == 'jmp']
@@ -91,5 +108,6 @@ if __name__ == '__main__':
 
     print("\nPart 1:\n")
     part1(program)
+
     print("\n\nPart 2:\n")
     part2(program)
