@@ -7,14 +7,13 @@ def read_voltages(inpath: Path) -> List[int]:
 
 
 def part1(adapters: List[int], vdelta_max: int = 3, starting_v: int = 0):
-
     adapters = sorted(adapters)
     difs = dict()
     cur_v = starting_v
     while adapters:
 
         min_v, choices = min(adapters[:vdelta_max]), adapters[:vdelta_max]
-        choice_index = choices.index(min_v)+1
+        choice_index = choices.index(min_v) + 1
         delta_v = min_v - cur_v
 
         try:
@@ -29,18 +28,17 @@ def part1(adapters: List[int], vdelta_max: int = 3, starting_v: int = 0):
     except KeyError:
         difs[3] = 1
 
-    return difs[1]*difs[3]
+    return difs[1] * difs[3]
 
 
 def part2(vouts: List[int], vdelta_max: int = 3, starting_v: int = 0):
-
     vouts = sorted([vout + starting_v for vout in vouts])
     assert starting_v < vouts[0]
     vouts.insert(starting_v, 0)
 
     adapters = {}
-    for idx, vout in zip(range(len(vouts)-1, -1, -1), reversed(vouts)):
-        startidx = idx-vdelta_max if idx-vdelta_max >= 0 else 0
+    for idx, vout in zip(range(len(vouts) - 1, -1, -1), reversed(vouts)):
+        startidx = idx - vdelta_max if idx - vdelta_max >= 0 else 0
         adapters[vout] = tuple(v for v in vouts[startidx:idx] if vout - v <= vdelta_max)
     adapters = {key: adapters[key] for key in sorted(adapters.keys())}
 

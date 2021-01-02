@@ -47,7 +47,7 @@ def navigate(instructions: Tuple[Tuple[str, int]], mode: str, initheading: Tuple
         elif inst == 'F':
             vectors['pos'] += vectors['waypoint'] * magnitude
 
-    return sum(abs(np.round(vectors['pos']-initpos).astype(np.int64)))
+    return sum(abs(np.round(vectors['pos'] - initpos).astype(np.int64)))
 
 
 if __name__ == '__main__':

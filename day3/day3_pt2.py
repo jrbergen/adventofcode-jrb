@@ -40,5 +40,4 @@ if __name__ == '__main__':
         print(f"We've encountered {ntrees} trees in our wander through the forest with slope Right {dcol} Down {drow}.")
         treecounts.append(ntrees)
 
-    print(f"The multiple of encountered trees = {reduce(lambda x, y: x*y, treecounts)}")
-
+    print(f"The multiple of encountered trees = {reduce(lambda x, y: x * y, treecounts)}")

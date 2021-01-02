@@ -13,4 +13,3 @@ if __name__ == '__main__':
     validbase = ('byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid',)
     n_valid = sum(1 if all(x in pp for x in validbase) else 0 for pp in passports)
     print(f"Found {n_valid} valid passports")
-

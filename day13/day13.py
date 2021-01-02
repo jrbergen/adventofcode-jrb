@@ -27,6 +27,7 @@ def part1(data: Tuple[int, List[int]]) -> int:
             return bus * (time - stamp)
         time += 1
 
+
 def lpf(n):
     i = 2
     while i * i <= n:
@@ -35,6 +36,7 @@ def lpf(n):
         else:
             n //= i
     return n
+
 
 def pf(n):
     i = 2
@@ -49,8 +51,11 @@ def pf(n):
         factors.append(n)
     return factors
 
+
 from numba import njit
-#@njit()
+
+
+# @njit()
 def part2(data: Tuple[int, List[int]], limit: int = 1_210_000_000) -> int:
     buses = data  # data[-1]
     dts = [t for t, bus in enumerate(buses) if bus != 0]
@@ -65,54 +70,54 @@ def part2(data: Tuple[int, List[int]], limit: int = 1_210_000_000) -> int:
     # print(f"Time deltas: {', '.join(str(t) for t  in dts)}")
     # print(f"Buses: {', '.join(str(b) for b in buses)}")
     compa = set(pf(r(buses))) & set(pf(r([bus + dt for bus, dt in zip(buses, dts)])))
-#    for bb in bbus+offset
+    #    for bb in bbus+offset
     t = 0  # min(buses)
     while True:
         # if time % 1_000_000 == 0:
         # print("search step", time)
-        #okcnt = 0
+        # okcnt = 0
 
         for dt, bus in zip(dts, buses):
-            if (t+dt) % bus != 0:
+            if (t + dt) % bus != 0:
                 break
         else:
             return t
             # if t > 3416:
-           # for
-            #     a = True if gcd(t + dt, bus) == 1 else False
-                # if a:
-                #     print("EULER! A")
-                #     print(f"\n### t = {t} ###")
-                #     print("BUS: ", bus)
-                #     print("t: ", t)
-                #     print("dt: ", dt)
+        # for
+        #     a = True if gcd(t + dt, bus) == 1 else False
+        # if a:
+        #     print("EULER! A")
+        #     print(f"\n### t = {t} ###")
+        #     print("BUS: ", bus)
+        #     print("t: ", t)
+        #     print("dt: ", dt)
 
-                # print("EULER", gcd(t+dt, bus)==1)
-                # print("PRIME dT: ", pf(dt))
-                # print("t+dt: ", t+dt)
-                # print("PRIME t+dt: ", is_prime(t+dt))# pf(t+dt))
-                # print("(t+dt) % bus: ", (t+dt)%bus)
-                # print("IS PRIME t=dt?: ", "YES" if is_prime(t+dt) else "no...")
+        # print("EULER", gcd(t+dt, bus)==1)
+        # print("PRIME dT: ", pf(dt))
+        # print("t+dt: ", t+dt)
+        # print("PRIME t+dt: ", is_prime(t+dt))# pf(t+dt))
+        # print("(t+dt) % bus: ", (t+dt)%bus)
+        # print("IS PRIME t=dt?: ", "YES" if is_prime(t+dt) else "no...")
 
-            # print()
-            # print(bus, pf(bus), t+dt, dt, pf(t+dt))
-            # print(gcd())
-            # if bus+dt
+        # print()
+        # print(bus, pf(bus), t+dt, dt, pf(t+dt))
+        # print(gcd())
+        # if bus+dt
 
-            #if (t + dt) % bus == 0:
-              #  okcnt += 1
-            # else:
-            # pass  # print(bus, dt, gcd(bus, dt))
+        # if (t + dt) % bus == 0:
+        #  okcnt += 1
+        # else:
+        # pass  # print(bus, dt, gcd(bus, dt))
 
         # pf =
         # print(f"ISPRIME MULTIPLIED??", is_prime(reduce(lambda x, y: x*y, [t+dt+b for b, dt in zip(buses, dts)])))
         # print(f"PRIME FACTORS MULTIPLIED bus * T: {pf(reduce(lambda x, y: x*y, [t+dt for b, dt in zip(buses, dts)]))}")
-        #if okcnt == 3:
-            #return t  # break#else:
-            # print(f"Time deltas: {', '.join(str(t) for t in dts)}")
-            # print(f"Buses: {', '.join(str(b) for b in buses)}")
-            # print(f"First occuring time: {time}")
-            # return t
+        # if okcnt == 3:
+        # return t  # break#else:
+        # print(f"Time deltas: {', '.join(str(t) for t in dts)}")
+        # print(f"Buses: {', '.join(str(b) for b in buses)}")
+        # print(f"First occuring time: {time}")
+        # return t
         # print(f"\n\n@@@@@@@@@@@@@@TIMESTEP  {t}    TIMESTEP@@@@@@@@@@@@@@@@\n")
         t += 1
 
@@ -130,13 +135,13 @@ class Attempt:
         self.grcd = reduce(lambda x, y: gcd(x, y), data)
 
 
-
 def cset(a, b):
     r = set(pfa(a)).intersection(set(pfa(b)))
     if len(r) == 1:
         return list(r)[0]
     else:
         raise ValueError("Not a single prime remaining")
+
 
 def is_prime(n: int) -> bool:
     """Primality test using 6k+-1 optimization."""
@@ -151,22 +156,30 @@ def is_prime(n: int) -> bool:
         i += 6
     return True
 
+
 def pfa(l):
-    return tuple(a for b in[pf(x) for x in l] for a in b)
+    return tuple(a for b in [pf(x) for x in l] for a in b)
+
 
 def r(l):
     l = tuple(l for l in l if l != 0)
-    return reduce(lambda x,y: x*y, l)
+    return reduce(lambda x, y: x * y, l)
+
+
 def rg(l):
     l = tuple(l for l in l if l != 0)
-    return reduce(lambda x, y: gcd(x,y), l)
+    return reduce(lambda x, y: gcd(x, y), l)
+
 
 def phi(primes: List[int]):
-    return r(p-1 for p in primes)
+    return r(p - 1 for p in primes)
+
 
 def euler(l):
     l = tuple(l for l in l if l != 0)
     return reduce(lambda x, y: pf(y))
+
+
 if __name__ == '__main__':
     data = read_input('input_day13.txt')
 
@@ -180,32 +193,26 @@ if __name__ == '__main__':
     a1, a2, a3, a4 = answers
     bb = list(bbuses.keys())
     b1, b2, b3, b4 = bb
-    bbo = tuple(tuple(i+b for i, b in enumerate(bus)) for bus in bb)
+    bbo = tuple(tuple(i + b for i, b in enumerate(bus)) for bus in bb)
     o1, o2, o3, o4 = bbo
-    c1, c2, c3, c4 = tuple(cset(x,y) for x,y in zip(bb,bbo))
+    c1, c2, c3, c4 = tuple(cset(x, y) for x, y in zip(bb, bbo))
 
     print(f"Temporary breakpoint in {__name__}")
 
     for bb, aa in zip(bbuses, answers):
         print("\n\n###")
         print(f"prime factors of ans {aa}: {pf(aa)}")
-        #print(f"pf for bbus: {pf(bb)}")
+        # print(f"pf for bbus: {pf(bb)}")
         print(f"pf for product of buses: {pf(r([b for b in bb if b]))}")
         print(f"pf for product of buses + offset: {pf(r([b + i for i, b in enumerate(bb)]))}")
 
-
     td = (17, 0, 13, 19)
 
-    tdo = [x+i for i,x in enumerate(td) if x]
+    tdo = [x + i for i, x in enumerate(td) if x]
     print(cset(o1, b1))
     print(f"Part 2: earliest timestep at which bus conditions apply = {part2(b2)}")
-#    target =
+    #    target =
     print(f"Temporary breakpoint in {__name__}")
-
-
-
-
-
 
     # print(f"Part 1: bus * (time-stamp) = {part1(data)}")
 

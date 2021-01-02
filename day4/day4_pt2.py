@@ -58,6 +58,7 @@ if __name__ == '__main__':
     passports = read_passports(Path(Path(__file__).parent / 'input_day4.txt').resolve())
 
     valid_pps = []
+
     validations = {'byr': lambda x: validate_date(x, 1920, 2002),
                    'iyr': lambda x: validate_date(x, 2010, 2020),
                    'eyr': lambda x: validate_date(x, 2020, 2030),
@@ -76,7 +77,8 @@ if __name__ == '__main__':
             print("---------------------------------")
             print("Validation failed for: \n")
             [print(key, val) for key, val in pp.items()]
-            print(f"Invalid fields: {[pp_key for pp_key, pp_val in pp.items() if pp_key in validations and not validations[pp_key](pp_val)]}")
+            print(
+                f"Invalid fields: {[pp_key for pp_key, pp_val in pp.items() if pp_key in validations and not validations[pp_key](pp_val)]}")
             print("#################################")
 
     print(f"Found {len(valid_pps)} valid passports")
