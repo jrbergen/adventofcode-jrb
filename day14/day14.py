@@ -46,73 +46,32 @@ def apply_masks_to_values(instructions) -> dict:
     return progdict
 
 
-def generate_floating_masks(mask: str, floating_char: str = 'X'):
-
-    float_positions = [chr.start() for chr in re.finditer(floating_char, mask)]
-
-    n_masks = 2 ** len(float_positions)
-    masks = [mask[:float_positions[0]] for _ in range(n_masks)]
-
-    print(f"Temporary breakpoint in {__name__}")
-
-
-
-
-
-
-    float_subsets = {''.join(x)
-                     for x in itertools.combinations_with_replacement(
-            ['1', '0'] * (len(float_positions) // 2 + 1),
-            len(float_positions))}
-
-    assert len(float_subsets) == 2 ** len(float_positions)
-
-    newmasks = [list(mask).copy() for _ in float_subsets]
-    for (i, newmask), floatset in zip(enumerate(newmasks), float_subsets):
-        for floatpos, floatset_char in zip(float_positions, floatset):
-            newmasks[i][floatpos] = floatset_char
-
-    newmasks = [''.join(newmask) for newmask in newmasks]
-
-    return newmasks
-
-
 def apply_mask_to_address(mask: str,
                           starting_address: str,
-                          nbits: int = 36) -> Set[int]:
-
-    masks = generate_floating_masks(mask)
-    start_addr_int = starting_address
-    addresses = set()
-    for newmask in masks:
-        cur_addr = start_addr_int
-        for (i, maskchar), addr_char in zip(enumerate(newmask, start=1), starting_address):
-            if maskchar == '1' and addr_char == '0':
-                cur_addr += 2 ** (nbits - i)
-        addresses.add(cur_addr)
-    print(addresses)
+                          nbits: int = 36) -> List[int]:
+    addresses = [0]
+    for (i, achr), mchr in zip(enumerate(starting_address), mask):
+        if mchr == 'X':
+            addresses += [address + 2 ** (nbits - i - 1) for address in addresses]
+        elif achr == '1' or mchr == '1':
+            addresses = [address + 2 ** (nbits - i - 1) for address in addresses]
     return addresses
 
 
-
-
-
 def apply_masks_to_addresses(instructions) -> dict:
-
     progdict = {}
     for maskdict in instructions:
         mask = maskdict['mask']
-        new_addresses = set()
-        for mementry in maskdict['mems']:#val in zip(*((intstr_to_binstr(x) for x in mementry) for mementry in maskdict['mems'])):
+        for mementry in maskdict['mems']:  # val in zip(*((intstr_to_binstr(x) for x in mementry) for mementry in maskdict['mems'])):
             val = mementry[-1]
-            new_addresses.add(apply_mask_to_address(mask=mask, starting_address=intstr_to_binstr(mementry[0])))
-            for new_addr in new_addresses:
-                progdict[int(new_addr, 2)] = val
+            cur_addresses = apply_mask_to_address(mask=mask, starting_address=intstr_to_binstr(mementry[0]))
+            for addr in cur_addresses:
+                progdict[addr] = intstr_to_binstr(val)
     return progdict
 
 
 def sum_dict(dict_: dict, base_numeral: int = 2):
-    return sum((int(x, base_numeral) for x in dict_.values()))
+    return sum((int(x, base_numeral) for x in list(dict_.values())))
 
 
 def part1(mems):

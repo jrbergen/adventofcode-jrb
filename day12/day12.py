@@ -19,6 +19,7 @@ def navigate(instructions: Tuple[Tuple[str, int]], mode: str, initheading: Tuple
              initpos: Tuple[int, int] = (0, 0)) -> int:
     """
     Runs navigation instructions and returns Manhattan's distance of traversed distance relative to starting position.
+
     :param instructions: list, mandatory: list of 2-tuples containing instructions ([ESWNLRF]{1}, int,)
     :param mode: str, mandatory, options: 'waypoint','pos'.
     :param initheading: 2-tuple, mandatory: initial heading.

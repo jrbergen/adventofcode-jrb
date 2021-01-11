@@ -30,6 +30,7 @@ def find_seat_id(seat_ids: List[int]) -> int:
     """
     Finds missing seat ID in a list of seat ids assuming that seatID - 1 and seatID + 1 are on the list
     Also assumes that there is only one missing value in the list in concordance the constraint above.
+
     :param seat_ids: list of seat id integers
     :returns: seat id if found, -1 if seat id was not found
     """
