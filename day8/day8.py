@@ -3,6 +3,7 @@ from typing import Union, List, NoReturn
 from functools import wraps
 from time import time
 
+
 def timing(f):
     @wraps(f)
     def wrap(*args, **kw):
@@ -10,8 +11,9 @@ def timing(f):
         result = f(*args, **kw)
         te = time()
         print('func:%r took: %2.4f sec' % \
-          (f.__name__, te-ts))
+              (f.__name__, te - ts))
         return result
+
     return wrap
 
 

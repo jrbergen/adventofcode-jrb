@@ -33,16 +33,16 @@ def navigate(instructions: ndarray, magnitudes: ndarray,
             update = np.array((magnitude, 0), dtype=np.float64)
             uflag = True
         elif inst == 'S':
-            update = np.array((0, -1*magnitude), dtype=np.float64)
+            update = np.array((0, -1 * magnitude), dtype=np.float64)
             uflag = True
         elif inst == 'W':
-            update = np.array((-1*magnitude, 0), dtype=np.float64)
+            update = np.array((-1 * magnitude, 0), dtype=np.float64)
             uflag = True
         elif inst == 'N':
             update = np.array((0, magnitude), dtype=np.float64)
             uflag = True
         elif inst == 'L':
-            waypoint = rot2d(waypoint, -1*magnitude * (pi / 180))
+            waypoint = rot2d(waypoint, -1 * magnitude * (pi / 180))
         elif inst == 'R':
             waypoint = rot2d(waypoint, magnitude * (pi / 180))
         elif inst == 'F':
@@ -53,7 +53,7 @@ def navigate(instructions: ndarray, magnitudes: ndarray,
             elif mode == 0:
                 pos += update
 
-    abs_ = np.abs(pos-initpos)
+    abs_ = np.abs(pos - initpos)
     return abs_[0] + abs_[1]
 
 

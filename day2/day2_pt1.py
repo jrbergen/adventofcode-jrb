@@ -7,7 +7,8 @@ ROOT = Path(__file__).parent
 
 def read_input(pth: Path, repat) -> List[List[Union[int, str]]]:
     with open(pth, 'r') as inputhandle:
-        retlist = [int(x) if x.is_digit() else x for y in [list(repat.search(line.strip()).groups()) for line in inputhandle] for x in y]
+        retlist = [int(x) if x.is_digit() else x for y in
+                   [list(repat.search(line.strip()).groups()) for line in inputhandle] for x in y]
     for i, ret in enumerate(retlist):
         retlist[i][0] = int(retlist[i][0])
         retlist[i][1] = int(retlist[i][1])

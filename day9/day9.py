@@ -24,8 +24,8 @@ def part1(data: List[int], preamble_size: int) -> int:
 
 
 def part2(data: List[int], target_sum) -> int:
-    for idx1 in range(len(data)-1):
-        for idx2 in range(idx1+1, len(data)-1):
+    for idx1 in range(len(data) - 1):
+        for idx2 in range(idx1 + 1, len(data) - 1):
             min_, max_, vals = min_max_val_in_single_iteration(data[idx1:idx2])
             cur_sum = sum(vals)
             if cur_sum > target_sum:

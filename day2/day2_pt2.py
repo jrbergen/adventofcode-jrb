@@ -4,6 +4,7 @@ import re
 
 ROOT = Path(__file__).parent
 
+
 def read_input(pth: Path, repat) -> List[List[Union[int, str]]]:
     with open(pth, 'r') as inputhandle:
         retlist = [list(repat.search(line.strip()).groups()) for line in inputhandle]
@@ -20,7 +21,7 @@ if __name__ == '__main__':
 
     validpasswords = []
     for passw in inputlst:
-        pw = {passw[-1][passw[0]-1], passw[-1][passw[1]-1]}
+        pw = {passw[-1][passw[0] - 1], passw[-1][passw[1] - 1]}
         if passw[-2] in pw and len(pw) == 2:
             validpasswords.append(passw[-1])
 

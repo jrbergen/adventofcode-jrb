@@ -44,6 +44,8 @@ def part1_purepython(seatmat: List[List[int]], ignoreval: int = -2) -> Tuple[int
             return sum((x for x in seatlist if x > 0)), iteration
         seatlist = newseats
         iteration += 1
+
+
 def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
                      gtfo_thresh: int = 5) -> Tuple[int, int]:
     # row_offset = len(seatmat[0])
@@ -61,14 +63,15 @@ def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
     state_iter = 0
     plotit = False
     if plotit:
-        statepic = np.zeros(shape=(len(seatmat),len(seatmat[0])))
+        statepic = np.zeros(shape=(len(seatmat), len(seatmat[0])))
 
     while True:
         newseats = [[None for _ in y] for y in lastseats]
 
         for row, col, seat in iterate_2dlist(lastseats):
 
-            direction_results = {k: None for k in itertools.combinations_with_replacement([0, 1, -1, 1], 2) if k != (0,0)}
+            direction_results = {k: None for k in itertools.combinations_with_replacement([0, 1, -1, 1], 2) if
+                                 k != (0, 0)}
 
             for dkey in direction_results:
                 dr, dc = dkey
@@ -79,10 +82,10 @@ def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
                 while direction_results[dkey] is None:
 
                     tgtrow, tgtcol = row + dr * dist, col + dc * dist
-                    #print(tgtrow, tgtcol)
+                    # print(tgtrow, tgtcol)
                     if tgtrow > len(seatmat) - 1 or tgtcol > len(seatmat[tgtrow]) - 1:
                         direction_results[dkey] = -2
-                        tgtrow, tgtcol = row + dr * dist-1, col + dc * dist-1
+                        tgtrow, tgtcol = row + dr * dist - 1, col + dc * dist - 1
                         if plotit:
                             statepic[col, row] = c.floor
                             plotstate(statepic, seatmat, col, row, tgtcol, tgtrow, state_iter, c)
@@ -144,17 +147,17 @@ class Cols:
     floor: int = 3
     occupied: int = 4
     empty: int = 5
-    cmap = colors.ListedColormap(['whitesmoke', 'tab:blue', 'tab:olive', 'lightsteelblue', 'crimson','springgreen'])
+    cmap = colors.ListedColormap(['whitesmoke', 'tab:blue', 'tab:olive', 'lightsteelblue', 'crimson', 'springgreen'])
     bounds = [0, 1, 2, 3, 4, 5]
     norm = colors.BoundaryNorm(bounds, cmap.N)
 
-def plotstate(statepic, seatmat, col, row, tgtcol, tgtrow, state_iter, colscls):
 
-    #coords = np.array([[col, row],[tgtrow, tgtcol]])
-    #coords = coords.dot([[-1,0],[0,1]])
+def plotstate(statepic, seatmat, col, row, tgtcol, tgtrow, state_iter, colscls):
+    # coords = np.array([[col, row],[tgtrow, tgtcol]])
+    # coords = coords.dot([[-1,0],[0,1]])
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=200)
     ax.set_title(f"Direction painted seats")  # . Direction = {dkey}")
-    ax.imshow(statepic + 0.5, cmap=colscls.cmap, norm=colscls.norm,origin='lower', interpolation='nearest')#,
+    ax.imshow(statepic + 0.5, cmap=colscls.cmap, norm=colscls.norm, origin='lower', interpolation='nearest')  # ,
     ax.set_xlim((len(seatmat) - 0.5, -0.5,))
     ax.set_ylim((len(seatmat[0]) - 0.5, -0.5))
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False,
@@ -162,8 +165,8 @@ def plotstate(statepic, seatmat, col, row, tgtcol, tgtrow, state_iter, colscls):
                     labelleft=False)
     # ax.grid(Fal, which='major')
 
-    #ax.arrow(coords[0,0], coords[0,1], coords[1,0], coords[1,1], head_width=0.4, zorder=100, clip_on=False,
-            # color='black', edgecolor='black')
+    # ax.arrow(coords[0,0], coords[0,1], coords[1,0], coords[1,1], head_width=0.4, zorder=100, clip_on=False,
+    # color='black', edgecolor='black')
     storepath = Path(f'figs/state{state_iter}.jpg')
     if storepath.exists():
         storepath.unlink()
@@ -171,6 +174,7 @@ def plotstate(statepic, seatmat, col, row, tgtcol, tgtrow, state_iter, colscls):
     plt.savefig(storepath)
     plt.autoscale(False)
     plt.close()
+
 
 def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
                      gtfo_thresh: int = 5) -> Tuple[int, int]:
@@ -189,14 +193,15 @@ def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
     state_iter = 0
     plotit = False
     if plotit:
-        statepic = np.zeros(shape=(len(seatmat),len(seatmat[0])))
+        statepic = np.zeros(shape=(len(seatmat), len(seatmat[0])))
 
     while True:
         newseats = [[None for _ in y] for y in lastseats]
 
         for row, col, seat in iterate_2dlist(lastseats):
 
-            direction_results = {k: None for k in itertools.combinations_with_replacement([0, 1, -1, 1], 2) if k != (0,0)}
+            direction_results = {k: None for k in itertools.combinations_with_replacement([0, 1, -1, 1], 2) if
+                                 k != (0, 0)}
 
             for dkey in direction_results:
                 dr, dc = dkey
@@ -207,10 +212,10 @@ def part2_purepython(seatmat: List[List[int]], ignoreval: int = -2,
                 while direction_results[dkey] is None:
 
                     tgtrow, tgtcol = row + dr * dist, col + dc * dist
-                    #print(tgtrow, tgtcol)
+                    # print(tgtrow, tgtcol)
                     if tgtrow > len(seatmat) - 1 or tgtcol > len(seatmat[tgtrow]) - 1:
                         direction_results[dkey] = -2
-                        tgtrow, tgtcol = row + dr * dist-1, col + dc * dist-1
+                        tgtrow, tgtcol = row + dr * dist - 1, col + dc * dist - 1
                         if plotit:
                             statepic[col, row] = c.floor
                             plotstate(statepic, seatmat, col, row, tgtcol, tgtrow, state_iter, c)

@@ -1,13 +1,13 @@
 import itertools
-import multiprocessing
 from functools import reduce
+from math import gcd
 from pathlib import Path
 from typing import Union, List, Tuple
-from math import gcd
+
 from numba import njit
 from numba.typed import List as nlist
 
-import numpy as np
+import dill as pickle
 
 
 def read_input(filepath: Union[str, Path]) -> Tuple[int, List[int]]:
@@ -34,7 +34,7 @@ def part1(data: Tuple[int, List[int]]) -> int:
         time += 1
 
 
-@njit()
+@njit(parallel=True)
 def part2(data: Tuple[int, List[int]]) -> int:
     buses = nlist()
     startbuses = nlist()
@@ -61,8 +61,7 @@ def part2(data: Tuple[int, List[int]]) -> int:
         else:
             return time
         time += 1
-        if time > limit:
-            return -10
+    return -10
 
 
 def part2_python(data: Tuple[int, List[int]]) -> int:
@@ -109,33 +108,23 @@ if __name__ == '__main__':
 
     # print(f"Part 1: bus * (time-stamp) = {part1(data)}")
     attempts = []
-    a = []  # nlist()
+    a = nlist()
     for x in itertools.combinations_with_replacement([0, 2, 3, 4, 12], 5):
         if x.count(0) <= 2:
-            a.append(list(x))  # nlist(x))
+            a.append(nlist(x))
     tot = len(a)
 
-    nproc = 7
-    pool = multiprocessing.Pool(processes=nproc)
-    res = []
-    results = []
     for i, data in enumerate(a):
         print(f'{(i / tot) * 100:.2f} %...', end='\r')
-        # print(data)
 
-        # part2.parallel_diagnostics(level=4)
+        attempts.append(Attempt(data=data, answer=part2_python(data)))
 
-        res.append(pool.apply_async(part2_python, [data]))
-
-        # np.random.choice([0,3,4])
-        # print(f"######## ATTEMPT {attempts} #########")
         # print(f"Temporary breakpoint in {__name__}")
         # print(f"Part 2: earliest timestep at which bus conditions apply = {part2_python(data)}")
         # print(f"Part 2: earliest timestep at which bus conditions apply = {part2(data)}")
     # print(f"Temporary breakpoint in {__name__}")
 
-    for r, data in zip(res, a):
-        attempts.append(Attempt(data=data, answer=r.get()))
-    pool.join()
-    pool.close()
+    with open("attempts.pkl", 'wb') as f:
+        pickle.dump(f)
+
     print(f"Temporary breakpoint in {__name__}")
