@@ -9,7 +9,7 @@ def parse_input(filename: Path) -> Tuple[Dict[str, List[int]],
                                          List[List[int]]]:
     numrex = re.compile('\d+')
     with open(filename, 'r') as fhandle:
-        fields, yourticket, nearbytickets = fhandle.read().split('\n\n')
+        fields, yourticket, nearbytickets = fhandle.read().split('\n \n')
 
     fields = {field.split(':')[0]: [int(lubound)
                                     for lubound in numrex.findall(field.split(':')[1])]
