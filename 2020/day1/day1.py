@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import List, Union, Tuple, Set, Optional
 
@@ -32,7 +34,7 @@ def sum_multiple_recursive(inputset: Set[int], numsums: int, lookfor: int, vals:
 
     for i, val in enumerate(inputset):
         if val + sum(vals) > lookfor:
-
+            ...
         if len(vals) == numsums:
             valsum = sum(vals)
             if valsum == lookfor:

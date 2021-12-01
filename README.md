@@ -1,2 +1,2 @@
-# Advent of Code exercises (2020)
-My solutions to adventofcode.com exercises 2020
+# Solutions to advent of Code puzzles/exercises
+Solutions to adventofcode.com exercises
