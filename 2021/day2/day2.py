@@ -89,7 +89,7 @@ class SubmarineB(SubmarineBase):
             case 'down':
                 self.aim += magnitude
             case _:
-                raise ValueError(f"Invalid direction: {direction!r}. Valid directions: {', '.join(SubmarineA.VALID_DIRECTIONS)}.")
+                raise ValueError(f"Invalid direction: {direction!r}. Valid directions: {', '.join(SubmarineB.VALID_DIRECTIONS)}.")
 
 
 def exercise_a() -> int:
