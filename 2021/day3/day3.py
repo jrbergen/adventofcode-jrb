@@ -49,16 +49,12 @@ def get_rating(filepath: Path,
 
 
 def get_life_support_rating(filepath: Path) -> int:
-    selection_rule_o2 = lambda arr, bitpos, mostcommon: arr[:, bitpos] == mostcommon
-    selection_rule_co2 = lambda arr, bitpos, mostcommon: arr[:, bitpos] != mostcommon
-    equally_common_rule_o2 = lambda arr, bitpos: arr[:, bitpos] == 1
-    equally_common_rule_co2 = lambda arr, bitpos: arr[:, bitpos] == 0
     oxrating = get_rating(filepath=filepath,
-                          selection_rule=selection_rule_o2,
-                          equally_common_rule=equally_common_rule_o2)
+                          selection_rule=lambda arr, bitpos, mostcommon: arr[:, bitpos] == mostcommon,
+                          equally_common_rule=lambda arr, bitpos: arr[:, bitpos] == 0)
     co2rating = get_rating(filepath=filepath,
-                           selection_rule=selection_rule_co2,
-                           equally_common_rule=equally_common_rule_co2)
+                           selection_rule=lambda arr, bitpos, mostcommon: arr[:, bitpos] != mostcommon,
+                           equally_common_rule=lambda arr, bitpos: arr[:, bitpos] == 1)
     return oxrating * co2rating
 
 
