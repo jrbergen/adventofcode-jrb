@@ -20,9 +20,9 @@ def get_power_consumption(filepath: Path) -> int:
     binarr = parse_input(filepath)
     gammastr: str = ''
     for icol, col in enumerate(binarr.T):
-        if col.sum() > round(col.size / 2):
+        if (colsum := col.sum()) > (roundedcolsize := round(col.size / 2)):
             gammastr += '1'
-        elif col.sum() < round(col.size / 2):
+        elif colsum < roundedcolsize:
             gammastr += '0'
         else:
             raise ValueError(f"Bits equally common in col {icol}.")
