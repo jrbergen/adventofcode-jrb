@@ -12,7 +12,7 @@ INPUT_PATH_3B: Path = INPUT_PATH_3A  # Same inputs for A and B
 
 
 @functools.lru_cache(maxsize=1)
-def parse_input(filepath: Path ) -> np.ndarray:
+def parse_input(filepath: Path) -> np.ndarray:
     return np.array([[int(char) for char in list(row)] for row in filepath.read_text(encoding='utf-8').split('\n') if row])
 
 
@@ -42,17 +42,9 @@ def get_rating(filepath: Path,
         if binarr.shape[0] < 2:
             break
         if len(set(counts)) == counts.size:
-            try:
-                most_common = vals[np.argmax(counts)]
-            except ValueError as err:
-                print(err)
-                print(f"Temporary breakpoint in {__name__}")
-                raise
-
-            binarr = binarr[selection_rule(binarr, cur_bitpos, most_common)]
+            binarr = binarr[selection_rule(binarr, cur_bitpos, vals[np.argmax(counts)])]
         else:
             binarr = binarr[equally_common_rule(binarr, cur_bitpos)]
-
     return int(''.join(str(x) for x in binarr.flatten().tolist()), 2)
 
 
