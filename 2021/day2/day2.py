@@ -5,7 +5,7 @@ from abc import ABCMeta
 from dataclasses import dataclass
 from pathlib import Path
 
-INPUT_PATH_2A: Path = Path(__file__).parent.joinpath('input2a.txt')
+INPUT_PATH_2A: Path = Path(__file__).parent.joinpath('input3a.txt')
 INPUT_PATH_2B: Path = INPUT_PATH_2A  # Same inputs for A and B
 
 
