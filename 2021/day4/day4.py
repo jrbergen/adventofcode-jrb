@@ -51,7 +51,7 @@ def calc_and_print_bingo_score(bingomatrix: BingoMatrix, guess_: int, last_wins:
     matscore = bingomatrix.score
     final_score = matscore * guess_
     print(f"Last guess: {guess_}.")
-    print(f"Sum of {'LAST' if last_wins else 'FIRST'} winning board: {bingomatrix.score}.")
+    print(f"Sum of {'LAST' if last_wins else 'FIRST'} winning board: {matscore}.")
     print(f"Final score of {'LAST' if last_wins else 'FIRST'} winning board: {final_score}.")
     return final_score
 
