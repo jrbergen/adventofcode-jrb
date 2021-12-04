@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import functools
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Iterable
+from typing import Iterable
 
 import numpy as np
 from numpy import ndarray
@@ -38,47 +37,48 @@ class BingoMatrix:
 
 
 @functools.lru_cache(maxsize=1)
-def parse_input(filepath: Path) -> tuple[list[int], list[BingoMatrix]]:
+def parse_input(filepath: Path) -> tuple[list[int], set[BingoMatrix]]:
     texts = filepath.read_text(encoding='utf-8').split('\n')
-    guesses_ = [int(num) for num in texts[0].split(',')]
-    bingomatrices, curbingomat = [], []
+    guessints = [int(num) for num in texts[0].split(',')]
+    bingomatrices, curbingomat = set(), []
+
     for line in texts[1:]:
+
         if line:
             curbingomat.append([int(num) for num in line.split(' ') if num])
         elif curbingomat:
-            bingomatrices.append(BingoMatrix(matrix=curbingomat))
+            bingomatrices.add(BingoMatrix(matrix=curbingomat))
             curbingomat = []
-    return guesses_, bingomatrices
+
+    return guessints, bingomatrices
 
 
-def solve_bingo(filepath: Path, last_to_get_bingo_wins: bool = False) -> int:
-    guesses, bingomats = parse_input(filepath)
-    bingomats = set(bingomats)
+def calc_and_print_bingo_score(bingomatrix: BingoMatrix, guess_: int, last_wins: bool = False) -> int:
+    matscore = bingomatrix.score
+    final_score = matscore * guess_
+    print(f"Last guess: {guess_}.")
+    print(f"Sum of {'LAST' if last_wins else 'FIRST'} winning board: {bingomatrix.score}.")
+    print(f"Final score of {'LAST' if last_wins else 'FIRST'} winning board: {final_score}.")
+    return final_score
+
+
+def solve_bingo(guesses: Iterable[int], bingomats: set[BingoMatrix], last_to_get_bingo_wins: bool = False) -> int:
     for guess in guesses:
         marked = []
         for bingomat in bingomats:
             bingomat.fill_numbers(guess)
+
             if (bingo := bingomat.bingo):
                 marked.append(bingomat)
+
             if (marked and not last_to_get_bingo_wins) or (bingo and len(bingomats) == 1):
-                matscore = bingomat.score
-                final_score = matscore * guess
-                print(f"Last guess: {guess}.")
-                print(f"Sum of {'LAST' if last_to_get_bingo_wins else 'FIRST'} winning board: {bingomat.score}.")
-                print(f"Final score of {'LAST' if last_to_get_bingo_wins else 'FIRST'} winning board: {final_score}.")
-                return final_score
+                return calc_and_print_bingo_score(bingomatrix=bingomat, guess_=guess, last_wins=last_to_get_bingo_wins)
+
         bingomats -= set(marked)
     raise ValueError("solve_bingo couldn't find solution.")
 
 
-def exercise_a() -> None:
-    print(f"Exercise A, day 4: final score best board = {solve_bingo(filepath=INPUT_PATH_4A)}.")
-
-
-def exercise_b() -> None:
-    print(f"Exercise B, day 4: final score worst board = {solve_bingo(filepath=INPUT_PATH_4B, last_to_get_bingo_wins=True)}.")
-
-
 if __name__ == '__main__':
-    exercise_a()
-    exercise_b()
+    guesses_, bingomatrices_ = parse_input(filepath=INPUT_PATH_4A)
+    print(f"Exercise A, day 4: final score best board = {solve_bingo(guesses_, bingomatrices_)}.")
+    print(f"Exercise B, day 4: final score worst board = {solve_bingo(guesses_, bingomatrices_, last_to_get_bingo_wins=True)}.")
