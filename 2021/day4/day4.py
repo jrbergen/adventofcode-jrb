@@ -29,12 +29,6 @@ class BingoMatrix:
         for num in number if isinstance(number, Iterable) else [number]:
             self.mask[np.where(self.mat == num)] = 0
 
-    def __repr__(self):
-        return f'{type(self).__name__}({self.mat})'
-
-    def __str__(self):
-        return f'{type(self).__name__}(bingo={self.bingo},\n{self.mat*self.mask})'
-
 
 @functools.lru_cache(maxsize=1)
 def parse_input(filepath: Path) -> tuple[list[int], set[BingoMatrix]]:
