@@ -25,18 +25,6 @@ def advance_step(lfish_counter: dict[int, int], spawntime: int, days_before_repr
     return lfish_counter
 
 
-def parse_input_example_states(filepath: Path, max_spawntime: int) -> dict[int, dict[int, int]]:
-    """Used to check against example; not used for exercise."""
-    fishes = [[int(num) for num in line.split(':')[-1].strip().split(',')]
-              for line in filepath.read_text(encoding='utf-8').split('\n') if line]
-    countercounters = dict()
-    for step, fishcounts in enumerate(fishes):
-        countercounters[step] = {daysleft: 0 for daysleft in range(max_spawntime + 1)}
-        for num in fishcounts:
-            countercounters[step][num] += 1
-    return countercounters
-
-
 def simulate_fishworld(ndays: int, filepath: Path, spawntime: int = 8) -> int:
     fishcounter = parse_input_to_fishcount(filepath=filepath, max_spawntime=spawntime)
     n_fish = 0
